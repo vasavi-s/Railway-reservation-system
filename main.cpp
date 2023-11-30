@@ -5,17 +5,20 @@ class Passenger{
         static int id;
         string name;
         int age;
-        string preference;
-        int pass_id=id++;
         string gender;
+        string cname;
+        int cage;
+        string bp;
+        int pass_id=id++;
         string alloted;
         int number;
-        Passenger(string n="", int a=0, string g="", string pref=""){
+        Passenger(string n="", int a=0, string g="",string cName="", int cAge=0, string pref=""){
             name=n;
             age=a;
             gender=g;
-            preference=pref;
-            id++;
+            cname=cName;
+            cage=cAge;
+            bp=pref;
             pass_id=id;
             alloted="";
             number=-1;
@@ -181,69 +184,161 @@ void bookTicket(Passenger p){
         Tickets::lbp.erase(Tickets::lbp.begin());
         Tickets::alb--;
     }
-    // else if()
+    else if(p.cname!="null" && Tickets::alb >0 ){
+        cout<<"You have a child, so we arrange a Lower Berth"<<endl;
+        tb.bookTicket(p,(Tickets::lbp[0]),"L");
+        Tickets::lbp.erase(Tickets::lbp.begin());
+        Tickets::alb--;
+    }
+    
+    else if((p.bp == "L" && Tickets::alb>0) || (p.bp=="M" && Tickets::amb>0) || (p.bp=="U" && Tickets::aub>0)){
+        if(p.bp=="L")
+        {
+            cout<<"Lower Berth Given"<<endl;
+            tb.bookTicket(p,(Tickets::lbp[0]),"L");
+            Tickets::lbp.erase(Tickets::lbp.begin());
+            Tickets::alb--;
+        }
+        else if(p.bp=="M")
+        {
+            cout<<"Middle Berth Given"<<endl;
+            tb.bookTicket(p,(Tickets::mbp[0]),"M");
+            Tickets::mbp.erase(Tickets::mbp.begin());
+            Tickets::amb--;
+        }
+        else if(p.bp=="U")
+        {
+            cout<<"Upper Berth Given"<<endl;
+            tb.bookTicket(p,(Tickets::ubp[0]),"U");
+            Tickets::ubp.erase(Tickets::ubp.begin());
+            Tickets::aub--;
+        }
+        else if(Tickets::alb>0){
+            cout<<"Lower Berth Given"<<endl;
+            tb.bookTicket(p,(Tickets::lbp[0]),"L");
+            Tickets::lbp.erase(Tickets::lbp.begin());
+            Tickets::alb--;
+        }
+        else if(Tickets::amb>0){
+            cout<<"Middle Berth Given"<<endl;
+            tb.bookTicket(p,(Tickets::mbp[0]),"M");
+            Tickets::mbp.erase(Tickets::mbp.begin());
+            Tickets::amb--;
+        }
+        else if(Tickets::aub>0){
+            cout<<"Upper Berth Given"<<endl;
+            tb.bookTicket(p,(Tickets::ubp[0]),"U");
+            Tickets::ubp.erase(Tickets::ubp.begin());
+            Tickets::aub--;
+        }
+        else if(Tickets::arac>0){
+            cout<<"RAC GIven"<<endl;
+            tb.racTicket(p,(Tickets::Racp[0]),"RAC");
+            Tickets::Racp.erase(Tickets::Racp.begin());
+            Tickets::arac--;
+        }
+        else if(Tickets::awl > 0){
+            cout<<"Waiting List Given"<<endl;
+            tb.wlTicket(p,(Tickets::Wlp[0]),"WL");
+            Tickets::Wlp.erase(Tickets::Wlp.begin());
+            Tickets::awl--;
+        }
+    }
+}
+
+void cancelTicket(int id){
+    Tickets tb;
+    if (tb.passenger_stored_data.find(id) == tb.passenger_stored_data.end()) 
+    {
+        cout<<"passenger Id Not Found!"<<endl;
+    }
+    else{
+        tb.cancelTicket(id);
+    }
 }
 int main(){
     int choice;
     bool close=true;
     cout<<"Welcome to railway reservation"<<endl;
     cout<<"------------------------------"<<endl;
-    cout<<"Main menu"<<endl;
-    // while(close){
-        cout<<"1. Book"<<endl;
-        cout<<"2. Booked tickets"<<endl;
-        cout<<"3. Exit"<<endl;
-    //     cout<<"Enter the option: ";
-    //     cin>>choice;
-    //     switch(choice)
-    //     {
-    //         case 1:{
-                string name,gender, pref;
-                int age;
-    //             bool child=false;
-    //             string childname;
-    //             int childAge;
+    while(close)
+    {
+        cout<<"Main menu"<<endl;
+        cout<<"1. Book"<<endl<<"2. Cancel"<<endl<<"3. Availabe Tickets"<<endl<<"4. Booked Tickets"<<endl<<"5. Exit"<<endl;
+        cout<<"Enter the option: ";
+        cin>>choice;
+        switch(choice)
+        {
+            case 1:
+            {
+                string name,gender,bp,cname;
+                int age,cage;
+                string childname;
+                int childAge;
                 cout<<"Enter name: ";
                 cin>>name;
                 cout<<"enter age: ";
                 cin>>age;
                 cout<<"enter gender [M/F]: ";
                 cin>>gender;
-    //             if(gender == "F"){
-    //                 cout<<"1. If you have a child, press 1."<<endl;
-    //                 cout<<"2. If you don't have a child, press 2."<<endl;
-    //                 int option;
-    //                 cin>>option;
-    //                 if(option == 1){
-    //                     cout<<"Enter child name: ";
-    //                     cin>>childname;
-    //                     cout<<"Enter child age: ";
-    //                     cin>>childAge;
-    //                     child=true;
-    //                 }
-    //                 else child=false;
-    //             }
-                cout<<"enter berth preference [L/M/U]: ";
-                cin>>pref;
-                Passenger p(name,age, gender, pref);
-                // bookTicket(p);
-    //             // t.addTicket(name,age,gender, pref);
-    //             cout<<"Tickets booked successfully!"<<endl;
-    //             cout<<"----------------------------"<<endl;
-    //             break;}
-    //         case 2:
-    //             {  
-    //                 break;
-    //             }
-    //         case 3:{
-    //             close=false;
-    //             break;
-    //         }
-    //     }
-    // }
-    
-    Tickets t1;
-    t1.availableTickets();
-    t1.passengerDetails();
-
+                if(gender == "F"){
+                    cout<<"1. If you have a child, press 1."<<endl;
+                    cout<<"2. If you don't have a child, press 2."<<endl;
+                    int cchoice;
+                    cin>>cchoice;
+                    if(cchoice == 1){
+                        cout<<"Enter child name: ";
+                        cin>>cname;
+                        cout<<"Enter child age: ";
+                        cin>>cage;
+                        cout<<"enter berth preference [L/M/U]: ";
+                        cin>>bp;
+                        Passenger p(name,age,gender,cname,cage,bp);
+                        bookTicket(p);
+                    }
+                    else if(cchoice==2){
+                        cout<<"enter berth preference [L/M/U]: ";
+                        cin>>bp;
+                        cname="null";
+                        cage=0;
+                        Passenger p(name,age, gender,cname,cage,bp);
+                        bookTicket(p);
+                    }
+                }
+                if(gender=="M"){
+                    cout<<"enter berth preference [L/M/U]: ";
+                    cin>>bp;
+                    cname="null";
+                    cage=0;
+                    Passenger p(name,age, gender,cname,cage,bp);
+                    bookTicket(p);
+                }
+                break;
+            }
+            case 2:
+            {   cout<<"Enter Passenger ID: ";
+                int id;
+                cin>>id;
+                cancelTicket(id);
+                break;
+            }
+            case 3:
+            {
+                Tickets tb;
+                tb.availableTickets();
+                break;
+            }
+            case 4:
+            {   Tickets tb;
+                tb.passengerDetails();
+                break;            
+            }
+            case 5:
+            {
+                close=false;
+                break;
+            }
+        }
+    }
+    return 0;
 }
